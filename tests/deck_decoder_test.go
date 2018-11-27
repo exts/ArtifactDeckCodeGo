@@ -41,22 +41,3 @@ func TestHeroCount(t *testing.T) {
 		assert.Equal(t, len(deck["heroes"]), 5)
 	}
 }
-
-func TestCardCount(t *testing.T) {
-	codes := []string{
-		//"ADCJQEAZX0ivAGABwA4XSXdAUEGQgEFAmIBRF0BDAkYAQUHAwEIBSQBMQFwASgBTw__",
-		"ADCJcURIH0De7sBKAGQeF1BQWbdAVhHRwFIMQIECG0CTgIfRlBCdQFSZWQvR3JlZW4gQnJhd2xlcg__",
-		//"ADCJRwSJX2Dc7wBEAN4XUFBcN0BQmQBQWABRCgBCgN0AWUBbQFDbwEISEJsdWUvQmxhY2sgQ29udHJvbA__",
-	}
-
-	for _, code := range codes {
-		deck, _ := ArtifactDeckCode.ParseDeck(code)
-
-		count := 5
-		for _, card := range deck["cards"] {
-			count += card["count"]
-		}
-
-		//assert.Equal(t, 54, count)
-	}
-}
