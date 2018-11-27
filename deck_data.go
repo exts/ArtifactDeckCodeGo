@@ -8,3 +8,9 @@ type Card struct {
 	Turn int
 	Count int
 }
+
+type CardDeck struct {
+	Name string
+	Heroes []Card
+	Cards []Card
+}
