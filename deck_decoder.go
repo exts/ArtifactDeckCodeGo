@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-// returns a map[string][]Card or error equivalent to the php version
-// data["heroes"] 	=> []Card
-// data["cards"] 	=> []Card
+// returns a *CardDeck struct or error equivalent to the php version (check deck_data.go)
+// data.name	=> string
+// data.heroes 	=> []Card
+// data.cards 	=> []Card
 // current need help with getting deck name
 func ParseDeck(strDeckCode string) (*CardDeck, error) {
 	deckBytes, err := DecodeDeckString(strDeckCode)
