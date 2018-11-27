@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-// returns a map[string][]map[string]int or error equivalent to the php version
-// data["heroes"] 	=> []map[string]int
-// data["cards"] 	=> []map[string]int
+// returns a map[string][]Card or error equivalent to the php version
+// data["heroes"] 	=> []Card
+// data["cards"] 	=> []Card
 // current need help with getting deck name
-func ParseDeck(strDeckCode string) (CData, error) {
+func ParseDeck(strDeckCode string) (map[string][]Card, error) {
 	deckBytes, err := DecodeDeckString(strDeckCode)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func DecodeDeckString(strDeckCode string) ([]byte, error) {
 	return decode, nil
 }
 
-func ParseDeckInternal(strDeckCode string, deckBytes []byte) (CData, error) {
+func ParseDeckInternal(strDeckCode string, deckBytes []byte) (map[string][]Card, error) {
 
 	byteIndex := 0
 	totalBytes := len(deckBytes)
@@ -95,7 +95,7 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (CData, error) {
 	}
 
 	// now read in the heroes
-	heroes := make([]map[string]int, 0)
+	heroes := make([]Card, 0)
 
 	{
 		prevCardBase := 0
@@ -106,14 +106,14 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (CData, error) {
 				return nil, errors.New("Couldn't get hero card data")
 			}
 
-			heroes = append(heroes, map[string]int{
-				"id":   heroCardId,
-				"turn": heroTurn,
+			heroes = append(heroes, Card{
+				Id: heroCardId,
+				Turn: heroTurn,
 			})
 		}
 	}
 
-	cards := make([]map[string]int, 0)
+	cards := make([]Card, 0)
 
 	prevCardBase := 0
 	for byteIndex < totalCardBytes {
@@ -123,14 +123,15 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (CData, error) {
 			return nil, errors.New("Couldn't get card data")
 		}
 
-		cards = append(cards, map[string]int{
-			"id":    cardId,
-			"count": cardCount,
+		cards = append(cards, Card{
+			Id: cardId,
+			Count: cardCount,
 		})
-		println(byteIndex)
 	}
 
-	cardData := CData{
+	//todo card name
+
+	cardData := map[string][]Card{
 		"heroes": heroes,
 		"cards":  cards,
 	}
@@ -157,14 +158,12 @@ func ReadSerializedCard(data []byte, indexStart *int, indexEnd int,
 	//read in the delta, which has 5 bits in the header, then additional bytes while the value is set
 	cardDelta := 0
 	if !ReadVarEncodedUint32(header, 5, data, indexStart, indexEnd, &cardDelta) {
-		println("nope!")
 		return false
 	}
 
 	*outCardId = *prevCardBase + cardDelta
 
 	if hasExtendedCount {
-		println("aye", indexStart)
 		if !ReadVarEncodedUint32(0, 0, data, indexStart, indexEnd, outCount) {
 			return false
 		}
@@ -172,7 +171,6 @@ func ReadSerializedCard(data []byte, indexStart *int, indexEnd int,
 		*outCount = (header >> 6) + 1
 	}
 
-	println("made it!")
 	*prevCardBase = *outCardId
 
 	return true
