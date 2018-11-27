@@ -139,7 +139,6 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (map[string][]Card,
 	return cardData, nil
 }
 
-//TODO remove debug code here
 //handles decoding a card that was serialized
 func ReadSerializedCard(data []byte, indexStart *int, indexEnd int,
 	prevCardBase *int, outCount *int, outCardId *int) bool {
