@@ -110,7 +110,7 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (*CardDeck, error) 
 			}
 
 			heroes = append(heroes, Card{
-				Id: heroCardId,
+				Id:   heroCardId,
 				Turn: heroTurn,
 			})
 		}
@@ -127,21 +127,21 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (*CardDeck, error) 
 		}
 
 		cards = append(cards, Card{
-			Id: cardId,
+			Id:    cardId,
 			Count: cardCount,
 		})
 	}
 
 	var name string
 	if byteIndex < totalBytes {
-		bytes := deckBytes[(len(deckBytes)-strLength):]
+		bytes := deckBytes[(len(deckBytes) - strLength):]
 		name = string(bytes)
 	}
 
 	*cardDeck = CardDeck{
-		Name: name,
+		Name:   name,
 		Heroes: heroes,
-		Cards: cards,
+		Cards:  cards,
 	}
 
 	return cardDeck, nil
