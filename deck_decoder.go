@@ -11,7 +11,7 @@ import (
 // data["heroes"] 	=> []Card
 // data["cards"] 	=> []Card
 // current need help with getting deck name
-func ParseDeck(strDeckCode string) (map[string][]Card, error) {
+func ParseDeck(strDeckCode string) (*CardDeck, error) {
 	deckBytes, err := DecodeDeckString(strDeckCode)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,9 @@ func DecodeDeckString(strDeckCode string) ([]byte, error) {
 	return decode, nil
 }
 
-func ParseDeckInternal(strDeckCode string, deckBytes []byte) (map[string][]Card, error) {
+func ParseDeckInternal(strDeckCode string, deckBytes []byte) (*CardDeck, error) {
+
+	cardDeck := &CardDeck{}
 
 	byteIndex := 0
 	totalBytes := len(deckBytes)
@@ -129,14 +131,19 @@ func ParseDeckInternal(strDeckCode string, deckBytes []byte) (map[string][]Card,
 		})
 	}
 
-	//todo card name
-
-	cardData := map[string][]Card{
-		"heroes": heroes,
-		"cards":  cards,
+	var name string
+	if byteIndex < totalBytes {
+		bytes := deckBytes[(len(deckBytes)-strLength):]
+		name = string(bytes)
 	}
 
-	return cardData, nil
+	*cardDeck = CardDeck{
+		Name: name,
+		Heroes: heroes,
+		Cards: cards,
+	}
+
+	return cardDeck, nil
 }
 
 //handles decoding a card that was serialized

@@ -38,6 +38,6 @@ func TestHeroCount(t *testing.T) {
 
 	for _, code := range codes {
 		deck, _ := ArtifactDeckCode.ParseDeck(code)
-		assert.Equal(t, len(deck["heroes"]), 5)
+		assert.Equal(t, len(deck.Heroes), 5)
 	}
 }
