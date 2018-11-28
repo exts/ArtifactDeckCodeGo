@@ -1,4 +1,4 @@
-package ArtifactDeckCode
+package ArtifactDeckCodeGo
 
 import (
 	"encoding/base64"
@@ -41,7 +41,7 @@ func EncodeBytes(deckContents *CardDeck) ([]byte, error) {
 	bytes := make([]byte, 0)
 
 	// our version and hero count
-	version := CurrentVersion << 4 | ExtraNBitsWithCarry(countHeroes, 3)
+	version := CurrentVersion<<4 | ExtraNBitsWithCarry(countHeroes, 3)
 	if !AddByte(&bytes, version) {
 		return nil, errors.New("Couldn't add version to byte array")
 	}
@@ -59,7 +59,7 @@ func EncodeBytes(deckContents *CardDeck) ([]byte, error) {
 	if len(deckContents.Name) > 0 {
 		actualLength := len(deckContents.Name)
 		for actualLength > 63 {
-			trimAmount := int(math.Floor(float64(actualLength - 63 / 4)))
+			trimAmount := int(math.Floor(float64(actualLength - 63/4)))
 			if trimAmount <= 1 {
 				trimAmount = 1
 			}
@@ -86,7 +86,7 @@ func EncodeBytes(deckContents *CardDeck) ([]byte, error) {
 			return nil, errors.New("Invalid hero card, first 5 cards should be heroes with id/turn data")
 		}
 
-		if !AddCardToBuffer(card.Turn, card.Id - prevCardId, &bytes) {
+		if !AddCardToBuffer(card.Turn, card.Id-prevCardId, &bytes) {
 			return nil, errors.New("Issue adding hero card to byte array")
 		}
 
@@ -108,7 +108,7 @@ func EncodeBytes(deckContents *CardDeck) ([]byte, error) {
 		}
 
 		// record this set of cards and advance
-		if !AddCardToBuffer(card.Count, card.Id - prevCardId, &bytes) {
+		if !AddCardToBuffer(card.Count, card.Id-prevCardId, &bytes) {
 			return nil, errors.New("Issue adding card to byte array")
 		}
 
@@ -126,7 +126,7 @@ func EncodeBytes(deckContents *CardDeck) ([]byte, error) {
 		}
 	}
 
-	fullChecksum := ComputeCheckSum(&bytes, stringByteCount - HeaderSize)
+	fullChecksum := ComputeCheckSum(&bytes, stringByteCount-HeaderSize)
 	smallChecksum := fullChecksum & 0x0FF
 
 	bytes[checksumByte] = byte(smallChecksum)
@@ -208,7 +208,7 @@ func AddCardToBuffer(count int, value int, bytes *[]byte) bool {
 	//determine our count. We can only store 2 bits, and we know the value is at least one,
 	// so we can encode values 1-5. However, we set both bits to indicate an extended count encoding
 	firstByteMaxCount := 0x03
-	extendedCount := count - 1 >= firstByteMaxCount
+	extendedCount := count-1 >= firstByteMaxCount
 
 	//determine our first byte, which contains our count, a continue flag, and the first few bits of our value
 	firstByteCount := count - 1
@@ -230,7 +230,7 @@ func AddCardToBuffer(count int, value int, bytes *[]byte) bool {
 	countBytesEnd := len(*bytes)
 
 	// check if something went horribly wrong
-	if countBytesEnd - countBytesStart > 11 {
+	if countBytesEnd-countBytesStart > 11 {
 		return false
 	}
 

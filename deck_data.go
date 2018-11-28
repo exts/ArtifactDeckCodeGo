@@ -1,4 +1,4 @@
-package ArtifactDeckCode
+package ArtifactDeckCodeGo
 
 // encoding & decoding
 const CurrentVersion = 2

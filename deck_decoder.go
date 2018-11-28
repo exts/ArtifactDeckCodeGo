@@ -1,4 +1,4 @@
-package ArtifactDeckCode
+package ArtifactDeckCodeGo
 
 import (
 	"encoding/base64"
