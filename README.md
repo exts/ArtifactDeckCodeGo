@@ -1,6 +1,10 @@
 # ArtifactDeckCodeGo
 Artifact Card Game Deck Code Encoder & Decoder based on the [original api](https://github.com/ValveSoftware/ArtifactDeckCode) code written in PHP.
 
+# Installation
+
+`go get github.com/exts/ArtifactDeckCodeGo`
+
 # Example Decode Usage
 
 ```go
