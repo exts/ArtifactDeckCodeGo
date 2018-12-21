@@ -20,6 +20,14 @@ func ParseDeck(strDeckCode string) (*CardDeck, error) {
 	return ParseDeckInternal(strDeckCode, deckBytes)
 }
 
+func ParseDeckRaw(strDeckCode string) (*CardDeck, error) {
+	deckBytes, err := DecodeDeckStringRaw(strDeckCode)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeckInternal(strDeckCode, deckBytes)
+}
+
 func DecodeDeckString(strDeckCode string) ([]byte, error) {
 
 	// check for prefix
@@ -42,6 +50,35 @@ func DecodeDeckString(strDeckCode string) ([]byte, error) {
 
 	// decode string
 	decode, err := base64.StdEncoding.DecodeString(deckCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return decode, nil
+}
+
+func DecodeDeckStringRaw(strDeckCode string) ([]byte, error) {
+
+	// check for prefix
+	if !strings.HasPrefix(strDeckCode, EncodedPrefix) {
+		return nil, fmt.Errorf("Deck Code doesn't have correct prefix")
+	}
+
+	// strip prefix
+	var deckCode string = strDeckCode[3:]
+
+	// search & replace
+	strFindReplace := map[string]string{
+		"-": "/",
+		"_": "=",
+	}
+
+	for strKey, strVal := range strFindReplace {
+		deckCode = strings.Replace(deckCode, strKey, strVal, -1)
+	}
+
+	// decode string
+	decode, err := base64.RawStdEncoding.DecodeString(deckCode)
 	if err != nil {
 		return nil, err
 	}
